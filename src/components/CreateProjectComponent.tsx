@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -7,39 +7,31 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Requirement, RequirementFields } from "../interfaces/Requirement";
-import colors from "../constants/color";
 import color from "../constants/color";
-type CreateRequirementComponentProps = {
-  handleSubmit: (requirement: Requirement) => void;
-};
-export default function CreateRequirementComponent({
-  handleSubmit,
-}: CreateRequirementComponentProps) {
-  const [requirement, setRequirement] = useState<Requirement>({
-    description: "",
-    difficulty: "",
-    estimated_time: "",
-    importance: "",
-  });
+import { Project } from "../interfaces/Project";
 
-  const handleChangeState = (field: RequirementFields, value: string) => {
-    setRequirement((currentRequirement) => {
-      let newRequirement = Object.assign({}, currentRequirement);
-      newRequirement[field] = value;
-      return newRequirement;
-    });
-  };
+type CreateProjectComponentProps = {
+  handleSubmit: (project: Project, requirements: Number[]) => void;
+};
+
+export default function CreateProjectComponent({
+  handleSubmit,
+}: CreateProjectComponentProps) {
+  const [project, setProject] = useState<Project>({
+    name: "",
+    release_date: "",
+    start_date: "",
+  });
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.titleView}>
-        <Text style={styles.titleScreen}>Criar requerimento</Text>
+        <Text style={styles.titleScreen}>Criar projeto</Text>
       </View>
       <View style={styles.container}>
         <View style={styles.row}>
           <TextInput
-            placeholder="Informe a descrição"
+            placeholder="Informe o nome"
             style={styles.input}
             selectionColor="blue"
             underlineColorAndroid={color.primary_color}
@@ -47,31 +39,32 @@ export default function CreateRequirementComponent({
         </View>
         <View style={styles.row}>
           <TextInput
-            placeholder="Informe a dificuldade (0 a 5)"
+            placeholder="Informe a data de entrega"
+            style={styles.input}
+            selectionColor="blue"
+            underlineColorAndroid={color.primary_color}
+          />
+        </View>
+        <View style={styles.row}>
+          <TextInput
+            placeholder="Informe a data de comeco"
             keyboardType="number-pad"
             style={styles.input}
             selectionColor="blue"
             underlineColorAndroid={color.primary_color}
           />
         </View>
+
         <View style={styles.row}>
           <TextInput
-            placeholder="Importância (0 a 3)"
+            placeholder="Selecione os requerimentos"
             keyboardType="number-pad"
             style={styles.input}
             selectionColor="blue"
             underlineColorAndroid={color.primary_color}
           />
         </View>
-        <View style={styles.row}>
-          <TextInput
-            placeholder="Tempo estimado (horas)"
-            keyboardType="numeric"
-            style={styles.input}
-            selectionColor="blue"
-            underlineColorAndroid={color.primary_color}
-          />
-        </View>
+
         <View style={styles.row}>
           <TouchableOpacity style={styles.button}>
             <Text style={styles.text}> Criar </Text>
