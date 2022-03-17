@@ -31,6 +31,10 @@ export default function CreateRequirementComponent({
     });
   };
 
+  const create = () => {
+    handleSubmit(requirement);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.titleView}>
@@ -83,7 +87,7 @@ export default function CreateRequirementComponent({
           />
         </View>
         <View style={styles.row}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={create}>
             <Text style={styles.text}> Criar </Text>
           </TouchableOpacity>
         </View>

@@ -8,7 +8,8 @@ import {
   View,
 } from "react-native";
 import color from "../constants/color";
-import { Project } from "../interfaces/Project";
+import { Project, RequiredFieldsProject } from "../interfaces/Project";
+import { Requirement } from "../interfaces/Requirement";
 
 type CreateProjectComponentProps = {
   handleSubmit: (project: Project, requirements: Number[]) => void;
@@ -22,6 +23,14 @@ export default function CreateProjectComponent({
     release_date: "",
     start_date: "",
   });
+  const [requirements, setRequirements] = useState<number[]>([]);
+  const [fetchedRequirements, setFetchedRequirements] = useState<Requirement[]>(
+    []
+  );
+
+  const handleChangeState = (field: RequiredFieldsProject, value: string) => {
+    
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

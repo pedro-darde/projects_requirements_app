@@ -17,7 +17,7 @@ class BaseService {
   private axiosClient: AxiosInstance;
   constructor() {
     this.axiosClient = axios.create({
-      baseURL: "http://localhost:3335/api/",
+      baseURL: "http://192.168.15.10:3335/api/",
     });
   }
 
