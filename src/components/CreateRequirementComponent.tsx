@@ -42,6 +42,7 @@ export default function CreateRequirementComponent({
             placeholder="Informe a descrição"
             style={styles.input}
             selectionColor="blue"
+            onChangeText={(desc) => handleChangeState("description", desc)}
             underlineColorAndroid={color.primary_color}
           />
         </View>
@@ -50,6 +51,9 @@ export default function CreateRequirementComponent({
             placeholder="Informe a dificuldade (0 a 5)"
             keyboardType="number-pad"
             style={styles.input}
+            onChangeText={(difficulty) =>
+              handleChangeState("difficulty", difficulty)
+            }
             selectionColor="blue"
             underlineColorAndroid={color.primary_color}
           />
@@ -59,6 +63,9 @@ export default function CreateRequirementComponent({
             placeholder="Importância (0 a 3)"
             keyboardType="number-pad"
             style={styles.input}
+            onChangeText={(importance) =>
+              handleChangeState("importance", importance)
+            }
             selectionColor="blue"
             underlineColorAndroid={color.primary_color}
           />
@@ -68,6 +75,9 @@ export default function CreateRequirementComponent({
             placeholder="Tempo estimado (horas)"
             keyboardType="numeric"
             style={styles.input}
+            onChangeText={(estimated) =>
+              handleChangeState("estimated_time", estimated)
+            }
             selectionColor="blue"
             underlineColorAndroid={color.primary_color}
           />
