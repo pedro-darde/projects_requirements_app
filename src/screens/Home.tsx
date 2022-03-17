@@ -38,7 +38,7 @@ export default function Home({ navigation }: any) {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              navigation.navigate("Project");
+              navigation.navigate("ListProject");
             }}
           >
             <Text style={styles.text}> Listagem de projetos </Text>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -7,12 +7,24 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import color from "../constants/color";
 import { Project, RequiredFieldsProject } from "../interfaces/Project";
-import { Requirement } from "../interfaces/Requirement";
-
+import { RequirementAdd } from "../interfaces/Requirement";
+import { baseService } from "../service/base-service";
+import { MaterialIcons } from "@expo/vector-icons";
+import {
+  Masks,
+  formatWithMask,
+  useMaskedInputProps,
+} from "react-native-mask-input";
 type CreateProjectComponentProps = {
   handleSubmit: (project: Project, requirements: Number[]) => void;
+};
+
+type RequirementDTO = {
+  name: string;
+  id: number;
 };
 
 export default function CreateProjectComponent({
@@ -24,12 +36,42 @@ export default function CreateProjectComponent({
     start_date: "",
   });
   const [requirements, setRequirements] = useState<number[]>([]);
-  const [fetchedRequirements, setFetchedRequirements] = useState<Requirement[]>(
-    []
-  );
+  const [releaseDate, setReleaseDate] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [fetchedRequirements, setFetchedRequirements] = useState<
+    RequirementDTO[]
+  >([]);
 
-  const handleChangeState = (field: RequiredFieldsProject, value: string) => {
-    
+  useEffect(() => {
+    baseService
+      .get<RequirementAdd[]>("requirement")
+      .then((res) => {
+        const requirementDTO = res.data.map((requirement) => {
+          return { id: requirement.id, name: requirement.description };
+        });
+        setFetchedRequirements(requirementDTO);
+      })
+      .catch((err) => {});
+  }, []);
+
+  const releaseDateProps = useMaskedInputProps({
+    value: releaseDate,
+    onChangeText: setReleaseDate,
+    mask: Masks.DATE_DDMMYYYY,
+  });
+
+  const startDateProps = useMaskedInputProps({
+    value: startDate,
+    onChangeText: setStartDate,
+    mask: Masks.DATE_DDMMYYYY,
+  });
+
+  const create = () => {
+    handleSubmit(
+      { name: projectName, release_date: releaseDate, start_date: startDate },
+      requirements
+    );
   };
 
   return (
@@ -42,12 +84,15 @@ export default function CreateProjectComponent({
           <TextInput
             placeholder="Informe o nome"
             style={styles.input}
+            value={projectName}
+            onChangeText={(name) => setProjectName(name)}
             selectionColor="blue"
             underlineColorAndroid={color.primary_color}
           />
         </View>
         <View style={styles.row}>
           <TextInput
+            {...releaseDateProps}
             placeholder="Informe a data de entrega"
             style={styles.input}
             selectionColor="blue"
@@ -56,6 +101,7 @@ export default function CreateProjectComponent({
         </View>
         <View style={styles.row}>
           <TextInput
+            {...startDateProps}
             placeholder="Informe a data de comeco"
             keyboardType="number-pad"
             style={styles.input}
@@ -65,17 +111,25 @@ export default function CreateProjectComponent({
         </View>
 
         <View style={styles.row}>
-          <TextInput
-            placeholder="Selecione os requerimentos"
-            keyboardType="number-pad"
-            style={styles.input}
-            selectionColor="blue"
-            underlineColorAndroid={color.primary_color}
+          <Text> Escolha os requerimentos </Text>
+          <SectionedMultiSelect
+            IconRenderer={MaterialIcons}
+            items={fetchedRequirements}
+            uniqueKey="id"
+            showDropDowns={true}
+            selectedItems={requirements}
+            selectedText="Selecione"
+            confirmText="Confirmar"
+            alwaysShowSelectText={true}
+            onSelectedItemsChange={(items) => {
+              setRequirements(items);
+            }}
+            selectText="Escolha um requerimento"
           />
         </View>
 
         <View style={styles.row}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={create}>
             <Text style={styles.text}> Criar </Text>
           </TouchableOpacity>
         </View>

@@ -2,6 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import Home from "./src/screens/Home";
 import Project from "./src/screens/Project";
+import ProjectsList from "./src/screens/Projects";
 import Requirement from "./src/screens/Requirement";
 export default function Routes() {
   const Stack = createStackNavigator();
@@ -10,6 +11,7 @@ export default function Routes() {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Requirement" component={Requirement} />
         <Stack.Screen name="Project" component={Project} />
+        <Stack.Screen name="ListProject" component={ProjectsList} />
       </Stack.Navigator>
   );
 }
