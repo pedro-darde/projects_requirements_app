@@ -1,4 +1,4 @@
-import { Requirement } from "./Requirement";
+import { Requirement, RequirementAdd } from "./Requirement";
 
 export type Project = {
   [Key in RequiredFieldsProject]: string
@@ -8,7 +8,10 @@ export type RequiredFieldsProject = "name" | "start_date" | "release_date";
 
 export type ProjectRequirement = {
   project: Project,
-  requirement: Requirement
+  requirement: RequirementAdd
 }
 
-export type ProjectAdded = Project & ProjectRequirement[]
+export type ProjectAdded = Project & {
+  id: number,
+  projectRequirements: ProjectRequirement[]
+}

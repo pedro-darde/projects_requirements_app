@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
 import { ProjectAdded } from "../interfaces/Project";
-import { formatWithMask, Masks } from "react-native-mask-input";
 import moment from "moment";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import { FontAwesome } from '@expo/vector-icons'
 type ListProjectProps = {
   projects: Array<ProjectAdded>;
   navigation: any;
 };
-export default function ListProjectComponent({ projects }: ListProjectProps) {
+export default function ListProjectComponent({ projects, navigation }: ListProjectProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}> Projetos </Text>
@@ -15,7 +15,12 @@ export default function ListProjectComponent({ projects }: ListProjectProps) {
         {projects.map((project, key) => {
           return (
             <View key={key} style={styles.card}>
-              <Text style={styles.projectTitle}>{project.name}</Text>
+              <View style={[styles.row, { justifyContent: "space-between" }]}>
+                <Text style={styles.projectTitle}>{project.name}</Text>
+                <TouchableOpacity onPress={() => { navigation.navigate('ShowProject', { project_id: project.id})}}> 
+                  <FontAwesome name="hand-o-right" size={20}/>
+                </TouchableOpacity>
+              </View>
               <Text>
                 Data de inicio:{" "}
                 {moment(project.start_date).format("DD/MM/YYYY")}
@@ -52,6 +57,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     width: "100%",
     backgroundColor: "yellow",
+    marginBottom: 5,
   },
   container: {
     padding: 10,

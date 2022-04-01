@@ -48,10 +48,9 @@ class BaseService {
 
   public patch<Type, Response>(
     modelName: string,
-    id: string,
     data: Type
   ): Promise<AxiosResponse<Response>> {
-    return this.axiosClient.patch(`${modelName}/${id}`, data);
+    return this.axiosClient.patch(`${modelName}`, data);
   }
 
   public delete<Type>(

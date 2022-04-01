@@ -8,22 +8,25 @@ import {
   View,
   Image,
 } from "react-native";
-import { Requirement, RequirementFields } from "../interfaces/Requirement";
+import {
+  Requirement,
+  RequirementAdd,
+  RequirementFields,
+  RequirementPictures,
+} from "../interfaces/Requirement";
 import color from "../constants/color";
-import { Camera, CameraCapturedPicture } from "expo-camera";
-import * as ImagePicker from "expo-image-picker";
-import * as Location from "expo-location";
-import { FontAwesome } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
-type CreateRequirementComponentProps = {
-  handleSubmit: (
-    requirement: Requirement,
-    pictures: CameraCapturedPicture[]
-  ) => void;
+import { baseService } from "../service/base-service";
+type EditRequirementComponentProps = {
+  handleSubmit: (requirement: Requirement, requirement_id: number) => void;
+  navigation: any;
+  route: any;
 };
-export default function CreateRequirementComponent({
+export default function EditRequirementComponent({
   handleSubmit,
-}: CreateRequirementComponentProps) {
+  navigation,
+  route,
+}: EditRequirementComponentProps) {
   const [requirement, setRequirement] = useState<Requirement>({
     description: "",
     difficulty: "",
@@ -31,10 +34,10 @@ export default function CreateRequirementComponent({
     importance: "",
     location: "",
   });
+  const [pictures, setPictures] = useState<RequirementPictures[]>([]);
 
-  const [hasPermissionToCamera, setHasPermissonToCamera] = useState(false);
-  const [hasPermissionToLocation, setHasPermissionToLocation] = useState(false);
-  const [pictures, setPictures] = useState<CameraCapturedPicture[]>([]);
+  const { requirement_id } = route.params;
+
   const handleChangeState = (field: RequirementFields, value: string) => {
     setRequirement((currentRequirement) => {
       let newRequirement = Object.assign({}, currentRequirement);
@@ -43,42 +46,45 @@ export default function CreateRequirementComponent({
     });
   };
 
-  const create = () => {
-    handleSubmit(requirement, pictures);
+  const fetchRequirement = () => {
+    if (requirement_id) {
+      baseService
+        .get<RequirementAdd>(`requirement/${requirement_id}`)
+        .then((res) => {
+          const {
+            description,
+            difficulty,
+            estimated_time,
+            importance,
+            location,
+            pictures,
+          } = res.data;
+          console.log(res.data);
+          setRequirement({
+            description,
+            difficulty,
+            estimated_time,
+            importance,
+            location,
+          });
+          setPictures(pictures);
+        });
+    }
+  };
+
+  const edit = () => {
+    handleSubmit(requirement, requirement_id);
   };
 
   useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermissonToCamera(status === "granted");
-
-      const { status: locationStatus } =
-        await Location.requestForegroundPermissionsAsync();
-      setHasPermissionToLocation(locationStatus === "granted");
-      const location = await Location.getCurrentPositionAsync();
-      const address = await Location.reverseGeocodeAsync(location.coords);
-      handleChangeState("location", JSON.stringify(address));
-    })();
-  }, []);
-
-  const showImagePicker = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [3, 3],
-    });
-    // Explore the result
-
-    if (!result.cancelled) {
-      setPictures((currentPictures) => [...currentPictures, result]);
-      console.log(pictures.length);
-    }
-  };
+    fetchRequirement();
+  }, [requirement_id]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
         <View style={styles.titleView}>
-          <Text style={styles.titleScreen}>Criar requerimento</Text>
+          <Text style={styles.titleScreen}>Editar requerimento</Text>
         </View>
         <View style={styles.container}>
           <View style={styles.row}>
@@ -86,6 +92,7 @@ export default function CreateRequirementComponent({
               placeholder="Informe a descrição"
               style={styles.input}
               selectionColor="blue"
+              value={requirement.description}
               onChangeText={(desc) => handleChangeState("description", desc)}
               underlineColorAndroid={color.primary_color}
             />
@@ -95,6 +102,7 @@ export default function CreateRequirementComponent({
               placeholder="Informe a dificuldade (0 a 5)"
               keyboardType="number-pad"
               style={styles.input}
+              value={requirement.difficulty.toString()}
               onChangeText={(difficulty) =>
                 handleChangeState("difficulty", difficulty)
               }
@@ -106,6 +114,7 @@ export default function CreateRequirementComponent({
             <TextInput
               placeholder="Importância (0 a 3)"
               keyboardType="number-pad"
+              value={requirement.importance.toString()}
               style={styles.input}
               onChangeText={(importance) =>
                 handleChangeState("importance", importance)
@@ -119,6 +128,7 @@ export default function CreateRequirementComponent({
               placeholder="Tempo estimado (horas)"
               keyboardType="numeric"
               style={styles.input}
+              value={requirement.estimated_time.toString()}
               onChangeText={(estimated) =>
                 handleChangeState("estimated_time", estimated)
               }
@@ -127,32 +137,20 @@ export default function CreateRequirementComponent({
             />
           </View>
 
-          {hasPermissionToCamera && pictures.length <= 1 && (
-            <View>
-              <View style={styles.row}>
-                <TouchableOpacity
-                  style={styles.cameraButton}
-                  onPress={showImagePicker}>
-                  <FontAwesome name="camera-retro" size={25} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-
           <View style={styles.row}>
             <Text> Imagens: </Text>
           </View>
           <View style={styles.row}>
-            {pictures.map((picture) => {
+            {pictures?.map((picture) => {
               return (
-                <View key={picture.base64} style={{ margin: 5 }}>
+                <View key={picture.id} style={{ margin: 5 }}>
                   <Image
                     style={{
                       width: 125,
                       height: 125,
                       resizeMode: "contain",
                     }}
-                    source={{ uri: picture.uri }}
+                    source={{ uri: picture.path }}
                   />
                 </View>
               );
@@ -160,7 +158,7 @@ export default function CreateRequirementComponent({
           </View>
 
           <View style={styles.row}>
-            <TouchableOpacity style={styles.button} onPress={create}>
+            <TouchableOpacity style={styles.button} onPress={edit}>
               <Text style={styles.text}> Criar </Text>
             </TouchableOpacity>
           </View>

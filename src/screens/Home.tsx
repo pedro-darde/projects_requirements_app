@@ -17,8 +17,7 @@ export default function Home({ navigation }: any) {
               style={styles.text}
               onPress={() => {
                 navigation.navigate("Requirement");
-              }}
-            >
+              }}>
               Criar requirimento
             </Text>
           </TouchableOpacity>
@@ -28,8 +27,7 @@ export default function Home({ navigation }: any) {
             style={styles.button}
             onPress={() => {
               navigation.navigate("Project");
-            }}
-          >
+            }}>
             <Text style={styles.text}> Criar projeto </Text>
           </TouchableOpacity>
         </View>
@@ -39,9 +37,18 @@ export default function Home({ navigation }: any) {
             style={styles.button}
             onPress={() => {
               navigation.navigate("ListProject");
-            }}
-          >
+            }}>
             <Text style={styles.text}> Listagem de projetos </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate("ListRequirement");
+            }}>
+            <Text style={styles.text}> Listagem de requerimentos </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
