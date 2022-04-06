@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import color from "../constants/color";
-import { Project, RequiredFieldsProject } from "../interfaces/Project";
+import { Project } from "../interfaces/Project";
 import { RequirementAdd } from "../interfaces/Requirement";
 import { baseService } from "../service/base-service";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -34,11 +34,13 @@ export default function CreateProjectComponent({
     name: "",
     release_date: "",
     start_date: "",
+    documentation_link: "",
   });
   const [requirements, setRequirements] = useState<number[]>([]);
   const [releaseDate, setReleaseDate] = useState("");
   const [projectName, setProjectName] = useState("");
   const [startDate, setStartDate] = useState("");
+  const [documentationLink, setDocumentationLink] = useState("");
   const [fetchedRequirements, setFetchedRequirements] = useState<
     RequirementDTO[]
   >([]);
@@ -69,7 +71,12 @@ export default function CreateProjectComponent({
 
   const create = () => {
     handleSubmit(
-      { name: projectName, release_date: releaseDate, start_date: startDate },
+      {
+        name: projectName,
+        release_date: releaseDate,
+        start_date: startDate,
+        documentation_link: documentationLink,
+      },
       requirements
     );
   };
@@ -107,6 +114,19 @@ export default function CreateProjectComponent({
             style={styles.input}
             selectionColor="blue"
             underlineColorAndroid={color.primary_color}
+          />
+        </View>
+
+        <View style={styles.row}>
+          <TextInput
+            placeholder="Informe um link para um documentacao complementar"
+            style={styles.input}
+            selectionColor="blue"
+            underlineColorAndroid={color.primary_color}
+            value={documentationLink}
+            onChangeText={(text) => {
+              setDocumentationLink(text);
+            }}
           />
         </View>
 

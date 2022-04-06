@@ -2,12 +2,16 @@ import { StyleSheet, Text, View } from "react-native";
 import { ProjectAdded } from "../interfaces/Project";
 import moment from "moment";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-import { FontAwesome } from '@expo/vector-icons'
+import { FontAwesome } from "@expo/vector-icons";
+import { useState } from "react";
 type ListProjectProps = {
   projects: Array<ProjectAdded>;
   navigation: any;
 };
-export default function ListProjectComponent({ projects, navigation }: ListProjectProps) {
+export default function ListProjectComponent({
+  projects,
+  navigation,
+}: ListProjectProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}> Projetos </Text>
@@ -17,8 +21,13 @@ export default function ListProjectComponent({ projects, navigation }: ListProje
             <View key={key} style={styles.card}>
               <View style={[styles.row, { justifyContent: "space-between" }]}>
                 <Text style={styles.projectTitle}>{project.name}</Text>
-                <TouchableOpacity onPress={() => { navigation.navigate('ShowProject', { project_id: project.id})}}> 
-                  <FontAwesome name="hand-o-right" size={20}/>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("ShowProject", {
+                      project_id: project.id,
+                    });
+                  }}>
+                  <FontAwesome name="hand-o-right" size={20} />
                 </TouchableOpacity>
               </View>
               <Text>
@@ -29,7 +38,16 @@ export default function ListProjectComponent({ projects, navigation }: ListProje
                 Data de lancamento:{" "}
                 {moment(project.release_date).format("DD/MM/YYYY")}
               </Text>
-
+              {project.documentation_link && (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("WebView", {
+                      webViewSource: project.documentation_link,
+                    });
+                  }}>
+                  <Text style={styles.link}> Documentacao </Text>
+                </TouchableOpacity>
+              )}
               <Text>
                 Requerimentos:
                 {project.projectRequirements.map((projectRequirement) => {
@@ -60,6 +78,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   container: {
+    flex: 1,
     padding: 10,
     alignItems: "center",
     justifyContent: "center",
@@ -72,5 +91,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontWeight: "bold",
+  },
+  link: {
+    color: "blue",
+    textDecorationLine: "underline",
   },
 });

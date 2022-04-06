@@ -3,11 +3,11 @@ import { Requirement, RequirementAdd } from "./Requirement";
 export type Project = {
   [Key in RequiredFieldsProject]: string
 };
-export type RequiredFieldsProject = "name" | "start_date" | "release_date";
+export type RequiredFieldsProject = "name" | "start_date" | "release_date" | "documentation_link";
 
 
 export type ProjectRequirement = {
-  project: Project,
+  project: Project, 
   requirement: RequirementAdd
 }
 
